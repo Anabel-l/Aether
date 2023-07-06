@@ -4,7 +4,7 @@
   "BoundaryConditions": {
     "type": "Planet"
   },
-  "ChemistryFile": "../chemistry_no_errors.csv",
+  "ChemistryFile": "UA/inputs/chemistry_earth_richards.csv",
   "CollisionsFile": "UA/inputs/ion_neutral_collision_frequencies.csv",
   "CubeSphere": {
     "is": false
@@ -39,7 +39,7 @@
   },
   "F107File": "UA/inputs/f107.txt",
   "GeoBlockSize": {
-    "nAlts": 40,
+    "nAlts": 50,
     "nBlocksLat": 1,
     "nBlocksLon": 1,
     "nLats": 18,
@@ -93,7 +93,11 @@
     "do": false,
     "dt": 3600.0
   },
+<<<<<<< HEAD
   "Seed": 492205968,
+=======
+  "Seed": -1825585039,
+>>>>>>> parent of 0493070... sed method of testing
   "StartTime": [
     2011,
     3,

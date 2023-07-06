@@ -1,11 +1,11 @@
 {
-    "nAlts": 45,
+    "nAlts": 55,
     "nLats": 23,
     "nLons": 23,
     "nVars": 3,
     "nX": 23,
     "nY": 23,
-    "nZ": 45,
+    "nZ": 55,
     "time": [
         1965,
         1,
