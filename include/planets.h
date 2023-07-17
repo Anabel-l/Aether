@@ -107,6 +107,12 @@ public:
   precision_t get_dipole_strength();
   
   /**********************************************************************
+     \brief AACGM code?
+   **/
+  precision_t get_aacgm();
+  
+  
+  /**********************************************************************
      \brief returns neutrals json for neutral density BCs
    **/
   json get_neutrals();

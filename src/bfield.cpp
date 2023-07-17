@@ -2,10 +2,17 @@
 // Full license can be found in License.md
 
 #include "aether.h"
+#include <stdio.h>
 
 // -----------------------------------------------------------------------------
 // This is the head bfield function that determines which bfield
 // to get, then gets it.
+// 
+// Bfield methods:
+//      - Dipole: our current method for setting magnetic field 
+//      - AACGM: Use Altitude-adjusted corrected geomagnetic coordinates
+//               (AACGM) to set the magnetic field data instead of the current
+//               method.
 // -----------------------------------------------------------------------------
 
 bfield_info_type get_bfield(precision_t lon,
@@ -46,9 +53,10 @@ bfield_info_type get_bfield(precision_t lon,
     bfield_info.b[2] = 0.0;
     bfield_info.lat = lat;
     bfield_info.lon = lon;
-  } else if (input.get_bfield_type() == "dipole")
+  } else if (input.get_bfield_type() == "dipole") {
     bfield_info = get_dipole(lon, lat, alt, DoDebug, planet, input, report);
-
+  } else if (input.get_bfield_type() == "aacgm")
+    //bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet, input, report); 
   if (DoDebug)
     report.exit(function);
 
