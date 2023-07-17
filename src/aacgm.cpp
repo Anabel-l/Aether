@@ -4,12 +4,9 @@
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
+#include <math.h>
 
 #include "aether.h"
-extern "C" { 
-    #include "../c_aacgm_v2.6/aacgmlib_v2.h"
-    #include "../c_aacgm_v2.6/mlt_v2.h"
-}
 
 // -----------------------------------------------------------------------------
 // Calculate an altitude adjusted corrected geomagnetic coordinate given the planetary
@@ -32,12 +29,28 @@ bfield_info_type get_aacgm(precision_t lon,
         report.enter(function, iFunction);
 
     bfield_info_type bfield_info;
-    double radius = planet.get_radius(lat);
-    
+    double radius =  planet.get_radius(lat);
+
+
+    //IGRF
+    IGRF_SetNow();
+
+    double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
+    double brtp[3]; // x, y, z essentially (br, btheta, bphi)
+
+    rtp[0] = planet.get_radius(lat) / 1000.0; // converting from meters to kilometers
+    rtp[1] = (M_PI / 2.0) - lat; //co-latitude, given latitude
+    rtp[2] = lon;
+
+    brtp;
+
+    IGRF_compute(rtp, brtp);
+
+
     double aacgm_lat;
     double aacgm_lon;
-    //AACGM_v2_SetNow();
-    //AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, G2A);
+    AACGM_v2_SetNow();
+    AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, G2A);
     /*bfield_info.b[0] = aacgm_lon;
     bfield_info.b[1] = aacgm_lat;
     bfield_info.b[2] = alt;

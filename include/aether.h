@@ -133,5 +133,12 @@ using json = nlohmann::json;
 // not commented
 #include "external_msis.h"
 
+//contains AACGM/IGRF files
+#include "aacgm/aacgmlib_v2.h"
+#include "aacgm/mlt_v2.h"
+#include "aacgm/astalg.h"
+#include "aacgm/genmag.h"
+#include "aacgm/igrflib.h"
+#include "aacgm/rtime.h"
 
 #endif  // INCLUDE_AETHER_H_
