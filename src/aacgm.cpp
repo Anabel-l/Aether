@@ -3,10 +3,13 @@
 
 #include <cmath>
 #include <iostream>
+#include <stdio.h>
 
 #include "aether.h"
-#include "../c_aacgm_v2.6/aacgmlib_v2.h"
-#include "../c_aacgm_v2.6/mlt_v2.h"
+extern "C" { 
+    #include "../c_aacgm_v2.6/aacgmlib_v2.h"
+    #include "../c_aacgm_v2.6/mlt_v2.h"
+}
 
 // -----------------------------------------------------------------------------
 // Calculate an altitude adjusted corrected geomagnetic coordinate given the planetary
@@ -31,12 +34,11 @@ bfield_info_type get_aacgm(precision_t lon,
     bfield_info_type bfield_info;
     double radius = planet.get_radius(lat);
     
-
     double aacgm_lat;
     double aacgm_lon;
-    AACGM_v2_SetNow();
-    AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, G2A);
-    bfield_info.b[0] = aacgm_lon;
+    //AACGM_v2_SetNow();
+    //AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, G2A);
+    /*bfield_info.b[0] = aacgm_lon;
     bfield_info.b[1] = aacgm_lat;
     bfield_info.b[2] = alt;
 
@@ -44,7 +46,7 @@ bfield_info_type get_aacgm(precision_t lon,
 
     bfield_info.lon = aacgm_lon;
     bfield_info.lat = aacgm_lat;
-
+    */
     if (DoDebug)
         report.exit(function);
 
