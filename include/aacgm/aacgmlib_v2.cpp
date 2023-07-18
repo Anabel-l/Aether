@@ -49,10 +49,12 @@
 
 
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <filesystem>
 #include "aacgmlib_v2.h"
 #include "igrflib.h"
 #include "genmag.h"
@@ -877,7 +879,8 @@ int AACGM_v2_LoadCoefs(int year)
   printf("AACGM_v2_LoadCoefs\n");
   #endif
   /* default location of coefficient files */
-  strcpy(root,getenv("AACGM_v2_DAT_PREFIX"));  
+  strcpy(root, get_current_dir_name());
+  strcat(root, "/coeffs/magmodel_1590-2020.txt");
   if (strlen(root)==0) {
     AACGM_v2_errmsg(2);
     return -1;

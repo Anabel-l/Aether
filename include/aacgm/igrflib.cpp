@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "igrflib.h"
 #include "genmag.h"
 #include "astalg.h"
@@ -90,7 +91,7 @@ int IGRF_loadcoeffs(void)
   int dgrf[MAXNYR];
   int epoch[MAXNYR];
   char jnk;
-  char *filename;
+  char filename[256];
 /*  char header[2][MAXSTR];*/
   char line[MAXSTR];
   double fyear;
@@ -103,7 +104,9 @@ int IGRF_loadcoeffs(void)
   #endif
 
   /* file containing the IGRF coefficients */
-  if ((filename = getenv("IGRF_COEFFS")) == NULL) {
+  strcpy(filename, get_current_dir_name());
+  strcat(filename, "/coeffs/magmodel_1590-2020.txt");
+  if (filename == NULL) {
     printf("\n");
     printf("***************************************************************\n");
     printf("* You MUST set the environment variable IGRF_COEFFS \n");
