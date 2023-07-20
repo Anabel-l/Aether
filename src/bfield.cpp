@@ -55,8 +55,8 @@ bfield_info_type get_bfield(precision_t lon,
     bfield_info.lon = lon;
   } else if (input.get_bfield_type() == "dipole") {
     bfield_info = get_dipole(lon, lat, alt, DoDebug, planet, input, report);
-  } /*else if (input.get_bfield_type() == "aacgm")
-    bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet, input, report); */
+  } else if (input.get_bfield_type() == "aacgm")
+    bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet, input, report);
   if (DoDebug)
     report.exit(function);
 

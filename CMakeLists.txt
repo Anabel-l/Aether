@@ -47,6 +47,7 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share
                       ${CMAKE_MODULE_PATH})
 target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include/aacgm)
 include_directories(${SHARE_INCLUDE})
 
 # Find dependencies

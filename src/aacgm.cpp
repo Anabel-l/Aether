@@ -13,7 +13,6 @@
 // characteristics
 // -----------------------------------------------------------------------------
 
-
 bfield_info_type get_aacgm(precision_t lon,
                            precision_t lat,
                            precision_t alt,
