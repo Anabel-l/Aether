@@ -18,7 +18,7 @@ set(MAIN_DIR ${PROJECT_SOURCE_DIR}/src/main)
 set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(OUT_DIR ${PROJECT_SOURCE_DIR}/src/output)
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/run)
-
+set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm)
 
 if(TEST_INTERPOLATION)
   add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
@@ -47,8 +47,8 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share
                       ${CMAKE_MODULE_PATH})
 target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include/aacgm)
 include_directories(${SHARE_INCLUDE})
+include_directories(${AACGM_INCLUDE})
 
 # Find dependencies
 find_package(Armadillo REQUIRED)
@@ -65,6 +65,10 @@ elseif(ARMADILLO_FOUND)
   message(WARNING "BLAS and LAPACK not found. Matrix operation will be slower.")
   target_link_libraries(aether PUBLIC ${ARMADILLO_LIBRARIES})
 endif()
+
+#aacgm include
+target_include_directories(aether PUBLIC ${AACGM_INCLUDE})
+target_link_libraries(aether PUBLIC ${AACGM_INCLUDE})
 
 find_package(OpenMP)
 if(OPENMP_FOUND)
@@ -90,6 +94,11 @@ if (USE_NETCDF)
   target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_CXX})
   target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_C})
 endif()
+
+# Set up links for aacgm/igrf functionality
+#include_directories(${AACGM_INCLUDE})
+file(CREATE_LINK ${AACGM_INCLUDE}
+${PROJECT_SOURCE_DIR}/share/include SYMBOLIC)
 
 # Set up links for executable
 file(CREATE_LINK ${CMAKE_BINARY_DIR}/aether
