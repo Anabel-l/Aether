@@ -18,20 +18,14 @@ set(MAIN_DIR ${PROJECT_SOURCE_DIR}/src/main)
 set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(OUT_DIR ${PROJECT_SOURCE_DIR}/src/output)
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/run)
-set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm/*.h)
-
-# aacgm
-add_library(aacgm ${PROJECT_SOURCE_DIR}/include/aacgm.cpp ${AACGM_INCLUDE})
-target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR})
+set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm)
+set(INCL ${PROJECT_SOURCE_DIR}/include/*.h)
 
 if(TEST_INTERPOLATION)
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_INCLUDE} ${MAIN_DIR}/main_test_interpolation.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
 else()
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_INCLUDE} ${MAIN_DIR}/main.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main.cpp)
 endif()
-
-# aacgm
-target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR})
 
 if(USE_DOUBLE_PRECISION)
   add_compile_definitions(AETHER_USE_PRECISION_DOUBLE)
@@ -55,7 +49,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share
                       ${CMAKE_MODULE_PATH})
 target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include)
 include_directories(${SHARE_INCLUDE})
-include_directories(${AACGM_INCLUDE})
 
 # Find dependencies
 find_package(Armadillo REQUIRED)
@@ -102,3 +95,13 @@ endif()
 file(CREATE_LINK ${CMAKE_BINARY_DIR}/aether
                  ${PROJECT_SOURCE_DIR}/share/run/aether SYMBOLIC)
 
+
+# aacgm
+add_executable(aacgm ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
+target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/include/aether.h)
+#add_library(aacgm_incl ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
+#target_link_libraries(aacgm PUBLIC aacgm_incl)
+#target_link_libraries(aether PUBLIC ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
+
+
+#target_include_directories(aether PUBLIC ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/src/aacgm.cpp ${PROJECT_SOURCE_DIR}/include/aether.h)
