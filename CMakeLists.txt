@@ -18,8 +18,7 @@ set(MAIN_DIR ${PROJECT_SOURCE_DIR}/src/main)
 set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(OUT_DIR ${PROJECT_SOURCE_DIR}/src/output)
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/run)
-set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm)
-set(INCL ${PROJECT_SOURCE_DIR}/include/*.h)
+set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm/)
 
 if(TEST_INTERPOLATION)
   add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
@@ -36,7 +35,7 @@ endif()
 
 # Set compiler and cmake options
 target_compile_options(aether PUBLIC -ffast-math -O3)
-set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include)
+set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include ${AACGM_INCLUDE})
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_FIND_ROOT_PATH ${SHARE_INCLUDE}
@@ -49,6 +48,15 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share
                       ${CMAKE_MODULE_PATH})
 target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include)
 include_directories(${SHARE_INCLUDE})
+
+
+#aacgm for the last fk in time
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/include/aether.h
+                 ${PROJECT_SOURCE_DIR}/include/aacgm/aether.h SYMBOLIC)
+add_library(aacgm ${SHARE_INCLUDE}  ${PROJECT_SOURCE_DIR}/src/aacgm.cpp 
+                  ${AACGM_INCLUDE}  ${AACGM_INCLUDE}/coeffs/  ${SOURCE_DIR})
+target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(aether PUBLIC aacgm)
 
 # Find dependencies
 find_package(Armadillo REQUIRED)
@@ -91,17 +99,7 @@ if (USE_NETCDF)
   target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_C})
 endif()
 
+
 # Set up links for executable
 file(CREATE_LINK ${CMAKE_BINARY_DIR}/aether
                  ${PROJECT_SOURCE_DIR}/share/run/aether SYMBOLIC)
-
-
-# aacgm
-add_executable(aacgm ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
-target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/include/aether.h)
-#add_library(aacgm_incl ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
-#target_link_libraries(aacgm PUBLIC aacgm_incl)
-#target_link_libraries(aether PUBLIC ${PROJECT_SOURCE_DIR}/src/aacgm.cpp)
-
-
-#target_include_directories(aether PUBLIC ${AACGM_INCLUDE} ${PROJECT_SOURCE_DIR}/src/aacgm.cpp ${PROJECT_SOURCE_DIR}/include/aether.h)

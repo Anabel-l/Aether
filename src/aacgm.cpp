@@ -1,6 +1,7 @@
 // Copyright 2020, the Aether Development Team (see doc/dev_team.md for members)
 // Full license can be found in License.md
 
+
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
@@ -45,20 +46,15 @@ bfield_info_type get_aacgm(precision_t lon,
 
     IGRF_compute(rtp, brtp);
 
-
-    double aacgm_lat;
-    double aacgm_lon;
-    AACGM_v2_SetNow();
-    AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, G2A);
-    /*bfield_info.b[0] = aacgm_lon;
-    bfield_info.b[1] = aacgm_lat;
-    bfield_info.b[2] = alt;
+    bfield_info.b[0] = brtp[0];
+    bfield_info.b[1] = brtp[1];
+    bfield_info.b[2] = brtp[2];
 
     precision_t b_env[3];  // env = East, North, Vertical
 
-    bfield_info.lon = aacgm_lon;
-    bfield_info.lat = aacgm_lat;
-    */
+    bfield_info.lon = lon;
+    bfield_info.lat = lat;
+    
     if (DoDebug)
         report.exit(function);
 
