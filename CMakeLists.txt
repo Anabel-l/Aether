@@ -12,18 +12,31 @@ else()
    set(MSIS_FILES )
 endif()
 
+
+# Set up links for aacgm
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.cpp
+                 ${PROJECT_SOURCE_DIR}/src/igrflib.cpp SYMBOLIC)
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.h
+                 ${PROJECT_SOURCE_DIR}/include/igrflib.h SYMBOLIC)
+                 file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.h
+                 ${PROJECT_SOURCE_DIR}/include/astalg.h SYMBOLIC)
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.cpp
+                 ${PROJECT_SOURCE_DIR}/src/astalg.cpp SYMBOLIC)
+
+#aacgm
+set(AACGM_FILES ${PROJECT_SOURCE_DIR}/ext/AACGM/)
+
 # Directory variables
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 set(MAIN_DIR ${PROJECT_SOURCE_DIR}/src/main)
 set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(OUT_DIR ${PROJECT_SOURCE_DIR}/src/output)
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/run)
-set(AACGM_INCLUDE ${PROJECT_SOURCE_DIR}/include/aacgm/)
 
 if(TEST_INTERPOLATION)
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
 else()
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main.cpp)
 endif()
 
 if(USE_DOUBLE_PRECISION)
@@ -35,7 +48,7 @@ endif()
 
 # Set compiler and cmake options
 target_compile_options(aether PUBLIC -ffast-math -O3)
-set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include ${AACGM_INCLUDE})
+set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_FIND_ROOT_PATH ${SHARE_INCLUDE}
@@ -65,27 +78,15 @@ elseif(ARMADILLO_FOUND)
   target_link_libraries(aether PUBLIC ${ARMADILLO_LIBRARIES})
 endif()
 
-#aacgm for the last fk in time
-file(CREATE_LINK ${PROJECT_SOURCE_DIR}/include/aether.h
-                 ${PROJECT_SOURCE_DIR}/include/aacgm/aether.h SYMBOLIC)
-add_library(aacgm ${PROJECT_SOURCE_DIR}/src/aacgm.cpp 
-                  ${AACGM_INCLUDE}  ${AACGM_INCLUDE}/coeffs/)
-target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(aacgm PUBLIC ${SOURCE_DIR})
-target_include_directories(aacgm PUBLIC ${SHARE_INCLUDE})
-target_link_libraries(aether PUBLIC aacgm)
-
 find_package(OpenMP)
 if(OPENMP_FOUND)
   target_include_directories(aether PUBLIC ${MPI_CXX_INCLUDE_DIRS})
-  target_include_directories(aacgm PUBLIC ${MPI_CXX_INCLUDE_DIRS})
   target_link_libraries(aether PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
 find_package(MPI)
 if (MPI_FOUND)
   target_include_directories(aether PUBLIC ${MPI_CXX_INCLUDE_PATH})
-  target_include_directories(aacgm PUBLIC ${MPI_CXX_INCLUDE_PATH})
   target_compile_options(aether PUBLIC ${MPI_CXX_COMPILE_FLAGS})
   target_link_libraries(aether PUBLIC ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS})
 endif()

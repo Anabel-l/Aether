@@ -4,9 +4,13 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include "aether.h"
 #include "igrflib.h"
-#include "genmag.h"
-#include "astalg.h"
+#include "../ext/AACGM/astalg.h"
+#include "../ext/AACGM/genmag.h"
+#include "../ext/AACGM/mlt_v2.h"
+#include "../ext/AACGM/rtime.h"
+#include "external_aacgm.h"
 
 /*#define DEBUG 1*/
 /* TO DO: should these go in igrflib.h? */

@@ -4,6 +4,9 @@
 #ifndef INCLUDE_BFIELD_H_
 #define INCLUDE_BFIELD_H_
 
+#include "aether.h"
+#include "external_aacgm.h"
+
 struct bfield_info_type {
   precision_t b[3];
   precision_t lon;
