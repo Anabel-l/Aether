@@ -49,15 +49,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share
 target_include_directories(aether PUBLIC ${PROJECT_SOURCE_DIR}/include)
 include_directories(${SHARE_INCLUDE})
 
-
-#aacgm for the last fk in time
-file(CREATE_LINK ${PROJECT_SOURCE_DIR}/include/aether.h
-                 ${PROJECT_SOURCE_DIR}/include/aacgm/aether.h SYMBOLIC)
-add_library(aacgm ${SHARE_INCLUDE}  ${PROJECT_SOURCE_DIR}/src/aacgm.cpp 
-                  ${AACGM_INCLUDE}  ${AACGM_INCLUDE}/coeffs/  ${SOURCE_DIR})
-target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(aether PUBLIC aacgm)
-
 # Find dependencies
 find_package(Armadillo REQUIRED)
 target_include_directories(aether PUBLIC ${ARMADILLO_INCLUDE_DIRS})
@@ -74,15 +65,27 @@ elseif(ARMADILLO_FOUND)
   target_link_libraries(aether PUBLIC ${ARMADILLO_LIBRARIES})
 endif()
 
+#aacgm for the last fk in time
+file(CREATE_LINK ${PROJECT_SOURCE_DIR}/include/aether.h
+                 ${PROJECT_SOURCE_DIR}/include/aacgm/aether.h SYMBOLIC)
+add_library(aacgm ${PROJECT_SOURCE_DIR}/src/aacgm.cpp 
+                  ${AACGM_INCLUDE}  ${AACGM_INCLUDE}/coeffs/)
+target_include_directories(aacgm PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(aacgm PUBLIC ${SOURCE_DIR})
+target_include_directories(aacgm PUBLIC ${SHARE_INCLUDE})
+target_link_libraries(aether PUBLIC aacgm)
+
 find_package(OpenMP)
 if(OPENMP_FOUND)
   target_include_directories(aether PUBLIC ${MPI_CXX_INCLUDE_DIRS})
+  target_include_directories(aacgm PUBLIC ${MPI_CXX_INCLUDE_DIRS})
   target_link_libraries(aether PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
 find_package(MPI)
 if (MPI_FOUND)
   target_include_directories(aether PUBLIC ${MPI_CXX_INCLUDE_PATH})
+  target_include_directories(aacgm PUBLIC ${MPI_CXX_INCLUDE_PATH})
   target_compile_options(aether PUBLIC ${MPI_CXX_COMPILE_FLAGS})
   target_link_libraries(aether PUBLIC ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS})
 endif()
@@ -98,7 +101,6 @@ if (USE_NETCDF)
   target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_CXX})
   target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_C})
 endif()
-
 
 # Set up links for executable
 file(CREATE_LINK ${CMAKE_BINARY_DIR}/aether

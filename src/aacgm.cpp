@@ -33,7 +33,7 @@ bfield_info_type get_aacgm(precision_t lon,
 
 
     //IGRF
-    IGRF_SetNow();
+    //IGRF_SetNow();
 
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
@@ -44,7 +44,7 @@ bfield_info_type get_aacgm(precision_t lon,
 
     brtp;
 
-    IGRF_compute(rtp, brtp);
+    //IGRF_compute(rtp, brtp);
 
     bfield_info.b[0] = brtp[0];
     bfield_info.b[1] = brtp[1];
