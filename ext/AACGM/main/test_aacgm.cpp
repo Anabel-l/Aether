@@ -27,7 +27,7 @@ printf("TEST: no date/time (this will return an error.)\n");
 lat = 45.5;
 lon = -23.5;
 hgt = 1135.;
-err = AACGM_v2_Convert(lat,lon,hgt, &mlat,&mlon, &r, G2A);
+//err = AACGM_v2_Convert(lat,lon,hgt, &mlat,&mlon, &r, G2A);
 if (err == 0) {
   printf("lat = %lf, lon = %lf, height = %lf\n", lat,lon,hgt);
   printf("mlat = %lf, mlon = %lf, r = %lf\n", mlat,mlon,r);

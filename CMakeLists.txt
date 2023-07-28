@@ -14,17 +14,17 @@ endif()
 
 
 # Set up links for aacgm
-file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.cpp
-                 ${PROJECT_SOURCE_DIR}/src/igrflib.cpp SYMBOLIC)
-file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.h
-                 ${PROJECT_SOURCE_DIR}/include/igrflib.h SYMBOLIC)
-                 file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.h
-                 ${PROJECT_SOURCE_DIR}/include/astalg.h SYMBOLIC)
-file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.cpp
-                 ${PROJECT_SOURCE_DIR}/src/astalg.cpp SYMBOLIC)
+#file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.cpp
+#                 ${PROJECT_SOURCE_DIR}/src/igrflib.cpp SYMBOLIC)
+#file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/igrflib.h
+#                 ${PROJECT_SOURCE_DIR}/include/igrflib.h SYMBOLIC)
+#                 file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.h
+#                 ${PROJECT_SOURCE_DIR}/include/astalg.h SYMBOLIC)
+#file(CREATE_LINK ${PROJECT_SOURCE_DIR}/ext/AACGM/astalg.cpp
+#                 ${PROJECT_SOURCE_DIR}/src/astalg.cpp SYMBOLIC)
 
 #aacgm
-set(AACGM_FILES ${PROJECT_SOURCE_DIR}/ext/AACGM/)
+file(GLOB AACGM_FILES ${PROJECT_SOURCE_DIR}/ext/AACGM/*.cpp)
 
 # Directory variables
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
@@ -48,7 +48,7 @@ endif()
 
 # Set compiler and cmake options
 target_compile_options(aether PUBLIC -ffast-math -O3)
-set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include)
+set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include ${PROJECT_SOURCE_DIR}/ext/AACGM)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_FIND_ROOT_PATH ${SHARE_INCLUDE}

@@ -159,7 +159,8 @@ void Grid::fill_grid_bfield(Planets planet, Inputs input, Report &report) {
 
   if (abs(planet.get_dipole_strength()) > 0) {
     HasBField = 1;
-
+    //IGRF set time here?
+    
     for (iLon = 0; iLon < nLons; iLon++) {
       for (iLat = 0; iLat < nLats; iLat++) {
         for (iAlt = 0; iAlt < nAlts; iAlt++) {

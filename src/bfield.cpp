@@ -45,7 +45,7 @@ bfield_info_type get_aacgm(precision_t lon,
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
 
-    rtp[0] = planet.get_radius(lat) / 1000.0; // converting from meters to kilometers
+    rtp[0] = (planet.get_radius(lat) + alt) / 1000.0; // converting from meters to kilometers
     rtp[1] = (M_PI / 2.0) - lat; //co-latitude, given latitude
     rtp[2] = lon;
 
