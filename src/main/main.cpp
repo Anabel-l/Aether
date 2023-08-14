@@ -68,11 +68,6 @@ int main() {
     MPI_Barrier(aether_comm);
     
     // Initialize Geographic grid:
-    
-    //IGRF
-    for(int tim : time.get_iCurrent()){
-      std::cout << tim << ", ";
-    }
     IGRF_SetDateTime(time.get_iCurrent()[0], time.get_iCurrent()[1], time.get_iCurrent()[2],
                      time.get_iCurrent()[3], time.get_iCurrent()[4], time.get_iCurrent()[5]);
     Grid gGrid(input.get_nLonsGeo(),
