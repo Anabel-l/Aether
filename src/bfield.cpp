@@ -37,7 +37,7 @@ bfield_info_type get_aacgm(precision_t lon,
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
 
     rtp[0] = (planet.get_radius(lat) + alt) / 1000.0; // converting from meters to kilometers
-    rtp[1] = (M_PI / 2.0) - lat; //co-latitude, given latitude
+    rtp[1] = (cPI / 2.0) - lat; //co-latitude, given latitude
     rtp[2] = lon;
 
     brtp;
@@ -50,8 +50,12 @@ bfield_info_type get_aacgm(precision_t lon,
 
     precision_t b_env[3];  // env = East, North, Vertical
 
-    bfield_info.lon = lon;
-    bfield_info.lat = lat;
+    double aacgm_lat;
+    double aacgm_lon;
+    AACGM_v2_SetNow();
+    AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, ALLOWTRACE);
+    bfield_info.lon = aacgm_lon;
+    bfield_info.lat = aacgm_lat;
     
     if (DoDebug)
         report.exit(function);
@@ -70,24 +74,29 @@ bfield_info_type get_bfield(precision_t lon,
 
   if (DoDebug)
     report.enter(function, iFunction);
+    
+  if(alt < 100*1000)
+    std::cout << "before: " << lon << ", " << lat << ", " << alt << endl;
 
   if (lat > cPI / 2) {
-    lat = cTWOPI - lat;
+    lat = cPI - lat;
     lon = lon + cPI;
-
-    if (lon > cTWOPI)
-      lon = lon - cTWOPI;
   }
 
   if (lat < -cPI / 2) {
-    lat = -cTWOPI + lat;
+    lat = -(cPI + lat);
     lon = lon + cPI;
-
-    if (lon > cTWOPI)
-      lon = lon - cTWOPI;
   }
+  
+  if (lon > cTWOPI)
+    lon = lon - cTWOPI;
+  
+  if(lon < 0)
+    lon = lon + cTWOPI;
 
   bfield_info_type bfield_info;
+  if(alt < 100*1000)
+    std::cout << "after: " << lon << ", " << lat << ", " << alt << endl;
 
   if (input.get_bfield_type() == "none") {
     bfield_info.b[0] = 0.0;

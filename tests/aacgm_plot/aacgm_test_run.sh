@@ -6,4 +6,4 @@ cd ../../
 ./aether
 cd UA/output
 ../../../srcPython/postAether.py -rm
-~/Aether-test/Aether/aetherpy/aether_plot_simple.py 3DALL_*.nc -var="O" -alt=200
+~/Aether-test/Aether/aetherpy/aether_plot_simple.py 3DBFI_*.nc -var="O" -alt=200

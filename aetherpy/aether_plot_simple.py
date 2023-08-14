@@ -201,16 +201,16 @@ if __name__ == '__main__':
             cmap = cm.plasma
 
         for iBlock in range(nBlocks):
-            lon2d = lonData['lon'][iBlock, 1:-1, 1:-1, iAlt]
-            lat2d = latData['lat'][iBlock, 1:-1, 1:-1, iAlt]
-            v2d = valueData[var][iBlock, 1:-1, 1:-1, iAlt]
+            lon2d = lonData['lon'][iBlock, :,:, iAlt]
+            lat2d = latData['lat'][iBlock, :, :, iAlt]
+            v2d = valueData[var][iBlock, :, :, iAlt]
             cax = ax.pcolormesh(lon2d, lat2d, v2d, \
                                 vmin = mini, vmax = maxi, cmap = cmap)
             
         ax.set_xlabel('Longitude (deg)')
         ax.set_ylabel('Latitude (deg)')
-        ax.set_ylim([-90.0, 90.0])
-        ax.set_xlim([0.0, 360.0])
+        #ax.set_ylim([-90.0, 90.0])
+        #ax.set_xlim([0.0, 360.0])
         ax.set_title(title)
         cbar = fig.colorbar(cax, ax=ax, shrink = 0.75, pad=0.02)
         cbar.set_label(var,rotation=90)
