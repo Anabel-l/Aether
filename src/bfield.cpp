@@ -1,8 +1,8 @@
 // Copyright 2020, the Aether Development Team (see doc/dev_team.md for members)
 // Full license can be found in License.md
-#include "aether.h"
-#include <stdio.h>
 
+#include "aether.h"
+#include "times.h"
 // -----------------------------------------------------------------------------
 // This is the head bfield function that determines which bfield
 // to get, then gets it.
@@ -23,9 +23,7 @@ bfield_info_type get_aacgm(precision_t lon,
                            precision_t lat,
                            precision_t alt,
                            bool DoDebug,
-                           Planets planet,
-                           Inputs input,
-                           Report &report) {
+                           Planets planet) {
                             
     std::string function = "aacgm";
     static int iFunction = -1;
@@ -36,9 +34,14 @@ bfield_info_type get_aacgm(precision_t lon,
     bfield_info_type bfield_info;
     double radius =  planet.get_radius(lat);
 
-
+    Times time;
+    
     //IGRF
-    IGRF_SetNow();
+    for(int tim : time.get_iCurrent()){
+      std::cout << tim << ", ";
+    }
+    IGRF_SetDateTime(time.get_iCurrent()[0], time.get_iCurrent()[1], time.get_iCurrent()[2], 
+                     time.get_iCurrent()[3], time.get_iCurrent()[4], time.get_iCurrent()[5]);
 
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
@@ -70,9 +73,7 @@ bfield_info_type get_bfield(precision_t lon,
                             precision_t lat,
                             precision_t alt,
                             bool DoDebug,
-                            Planets planet,
-                            Inputs input,
-                            Report &report) {
+                            Planets planet) {
 
   std::string function = "get_bfield";
   static int iFunction = -1;
@@ -97,8 +98,8 @@ bfield_info_type get_bfield(precision_t lon,
   }
 
   bfield_info_type bfield_info;
-  bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet, input, report);
-  /*if (input.get_bfield_type() == "none") {
+
+  if (input.get_bfield_type() == "none") {
     bfield_info.b[0] = 0.0;
     bfield_info.b[1] = 0.0;
     bfield_info.b[2] = 0.0;
@@ -106,11 +107,11 @@ bfield_info_type get_bfield(precision_t lon,
     bfield_info.lon = lon;
   } else if (input.get_bfield_type() == "dipole") {
     std::cout << "dipole" << endl;
-    bfield_info = get_dipole(lon, lat, alt, DoDebug, planet, input, report);
+    bfield_info = get_dipole(lon, lat, alt, DoDebug, planet);
   } else if (input.get_bfield_type() == "aacgm") {
     std::cout << "aacgm" << endl;
-    bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet, input, report);
-  }*/
+    bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet);
+  }
 
   if (DoDebug)
     report.exit(function);
@@ -124,7 +125,7 @@ bfield_info_type get_bfield(precision_t lon,
 // -----------------------------------------------------------------------------
 
 arma_vec get_magnetic_pole(int IsNorth,
-                           Planets planet, Inputs input) {
+                           Planets planet) {
 
   arma_vec lonlat(2, fill::zeros);
 

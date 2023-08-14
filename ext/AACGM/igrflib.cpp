@@ -6,10 +6,10 @@
 #include <unistd.h>
 #include "aether.h"
 #include "igrflib.h"
-#include "../ext/AACGM/astalg.h"
-#include "../ext/AACGM/genmag.h"
-#include "../ext/AACGM/mlt_v2.h"
-#include "../ext/AACGM/rtime.h"
+#include "astalg.h"
+#include "genmag.h"
+#include "mlt_v2.h"
+#include "rtime.h"
 
 /*#define DEBUG 1*/
 /* TO DO: should these go in igrflib.h? */
@@ -108,7 +108,7 @@ int IGRF_loadcoeffs(void)
 
   /* file containing the IGRF coefficients */
   strcpy(filename, get_current_dir_name());
-  strcat(filename, "/coeffs/magmodel_1590-2020.txt");
+  strcat(filename, "/../ext/AACGM/coeffs/magmodel_1590-2020.txt");
   if (filename == NULL) {
     printf("\n");
     printf("***************************************************************\n");

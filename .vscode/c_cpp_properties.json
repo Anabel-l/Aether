@@ -5,7 +5,6 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/lib/x86_64-linux-gnu/openmpi/include",
-                "/home/skelly/Aether/include",
                 "/home/skelly/Aether-test/Aether/include"
             ],
             "defines": [],
