@@ -21,11 +21,13 @@ set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(OUT_DIR ${PROJECT_SOURCE_DIR}/src/output)
 set(RUN_DIR ${PROJECT_SOURCE_DIR}/run)
 
+#aacgm
+file(GLOB AACGM_FILES ${PROJECT_SOURCE_DIR}/ext/AACGM/*.cpp)
 
 if(TEST_INTERPOLATION)
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
 else()
-  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${MAIN_DIR}/main.cpp)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main.cpp)
 endif()
 
 if(USE_DOUBLE_PRECISION)
@@ -37,7 +39,7 @@ endif()
 
 # Set compiler and cmake options
 target_compile_options(aether PUBLIC -ffast-math -O3)
-set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include)
+set(SHARE_INCLUDE ${PROJECT_SOURCE_DIR}/share/include ${PROJECT_SOURCE_DIR}/ext/AACGM)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_FIND_ROOT_PATH ${SHARE_INCLUDE}

@@ -144,7 +144,7 @@ void Grid::calc_mlt() {
 //  fill grid with magnetic field values
 // -----------------------------------------------------------------------------
 
-void Grid::fill_grid_bfield(Planets planet) {
+void Grid::fill_grid_bfield(Planets planet, Inputs input, Report &report) {
 
   std::string function = "Grid::fill_grid_bfield";
   static int iFunction = -1;
@@ -169,7 +169,7 @@ void Grid::fill_grid_bfield(Planets planet) {
           alt = geoAlt_scgc(iLon, iLat, iAlt);
 
           bfield_info = get_bfield(lon, lat, alt, DoDebug,
-                                   planet);
+                                   planet, input, report);
 
           magLat_scgc(iLon, iLat, iAlt) = bfield_info.lat;
           magLon_scgc(iLon, iLat, iAlt) = bfield_info.lon;
@@ -193,8 +193,8 @@ void Grid::fill_grid_bfield(Planets planet) {
       bfield_unit_vcgc[iDim] = bfield_vcgc[iDim] / (bfield_mag_scgc + 1e-32);
 
     int IsNorth = 1, IsSouth = 0;
-    mag_pole_north_ll = get_magnetic_pole(IsNorth, planet);
-    mag_pole_south_ll = get_magnetic_pole(IsSouth, planet);
+    mag_pole_north_ll = get_magnetic_pole(IsNorth, planet, input, report);
+    mag_pole_south_ll = get_magnetic_pole(IsSouth, planet, input, report);
   }
 
   report.exit(function);
@@ -205,7 +205,7 @@ void Grid::fill_grid_bfield(Planets planet) {
 //  Fill in radius, radius^2, and 1/radius^2
 // -----------------------------------------------------------------------------
 
-void Grid::fill_grid_radius(Planets planet) {
+void Grid::fill_grid_radius(Planets planet, Inputs input, Report &report) {
 
   std::string function = "Grid::fill_grid_radius";
   static int iFunction = -1;
