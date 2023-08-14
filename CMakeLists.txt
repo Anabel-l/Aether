@@ -26,6 +26,8 @@ file(GLOB AACGM_FILES ${PROJECT_SOURCE_DIR}/ext/AACGM/*.cpp)
 
 if(TEST_INTERPOLATION)
   add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main_test_interpolation.cpp)
+elseif(TEST_COORD)
+  add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main_test_coord.cpp)
 else()
   add_executable(aether ${SRC_FILES} ${MSIS_FILES} ${AACGM_FILES} ${MAIN_DIR}/main.cpp)
 endif()
