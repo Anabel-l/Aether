@@ -5,6 +5,7 @@
 #define INCLUDE_GRID_H_
 
 #include "mpi.h"
+#include "aether.h"
 
 // ----------------------------------------------------------------------------
 // Grid class
