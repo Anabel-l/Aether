@@ -2,7 +2,6 @@
 // Full license can be found in License.md
 
 #include "aether.h"
-#include "times.h"
 // -----------------------------------------------------------------------------
 // This is the head bfield function that determines which bfield
 // to get, then gets it.
@@ -33,15 +32,6 @@ bfield_info_type get_aacgm(precision_t lon,
 
     bfield_info_type bfield_info;
     double radius =  planet.get_radius(lat);
-
-    Times time;
-    
-    //IGRF
-    for(int tim : time.get_iCurrent()){
-      std::cout << tim << ", ";
-    }
-    IGRF_SetDateTime(time.get_iCurrent()[0], time.get_iCurrent()[1], time.get_iCurrent()[2], 
-                     time.get_iCurrent()[3], time.get_iCurrent()[4], time.get_iCurrent()[5]);
 
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
@@ -106,10 +96,8 @@ bfield_info_type get_bfield(precision_t lon,
     bfield_info.lat = lat;
     bfield_info.lon = lon;
   } else if (input.get_bfield_type() == "dipole") {
-    std::cout << "dipole" << endl;
     bfield_info = get_dipole(lon, lat, alt, DoDebug, planet);
   } else if (input.get_bfield_type() == "aacgm") {
-    std::cout << "aacgm" << endl;
     bfield_info = get_aacgm(lon, lat, alt, DoDebug, planet);
   }
 
