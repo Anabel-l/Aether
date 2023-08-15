@@ -31,31 +31,36 @@ bfield_info_type get_aacgm(precision_t lon,
         report.enter(function, iFunction);
 
     bfield_info_type bfield_info;
-    double radius =  planet.get_radius(lat);
 
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
+    double geocentric[3]; // radial distance from center of Earth [RE], angle from north pole [radians],
+;                         // azimuthal angle [radians]
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
 
-    rtp[0] = (planet.get_radius(lat) + alt) / 1000.0; // converting from meters to kilometers
+    //convert from geodetic (lat, lon, alt) to geocentric
+    plh2xyz(lat, lon, alt, geocentric);
+
+    //set IGRF input variables: r (geocentric distance, km), theta (co-lat, rad), phi (lon, rad)
+    rtp[0] = geocentric[0]; //taking in radial distance from center of Earth
     rtp[1] = (cPI / 2.0) - lat; //co-latitude, given latitude
     rtp[2] = lon;
 
-    brtp;
-
+    //IGRF conversion
     IGRF_compute(rtp, brtp);
 
     bfield_info.b[0] = brtp[0];
     bfield_info.b[1] = brtp[1];
     bfield_info.b[2] = brtp[2];
 
-    precision_t b_env[3];  // env = East, North, Vertical
-
+    //AACGM conversion
     double aacgm_lat;
     double aacgm_lon;
     AACGM_v2_SetNow();
-    AACGM_v2_Convert(lat, lon, alt, &aacgm_lat, &aacgm_lon, &radius, ALLOWTRACE);
-    bfield_info.lon = aacgm_lon;
-    bfield_info.lat = aacgm_lat;
+    double deg_lat = (lat / cTWOPI) * 360.0; //convert to degrees
+    double deg_lon = (lon / cTWOPI) * 360.0; //convert to degrees
+    AACGM_v2_Convert(deg_lat, deg_lon, alt, &aacgm_lat, &aacgm_lon, &geocentric[0], ALLOWTRACE);
+    bfield_info.lon = (aacgm_lon / 360.0) * cTWOPI; //convert back to radians
+    bfield_info.lat = (aacgm_lat / 360.0) * cTWOPI; //convert back to radians
     
     if (DoDebug)
         report.exit(function);
@@ -74,9 +79,6 @@ bfield_info_type get_bfield(precision_t lon,
 
   if (DoDebug)
     report.enter(function, iFunction);
-    
-  if(alt < 100*1000)
-    std::cout << "before: " << lon << ", " << lat << ", " << alt << endl;
 
   if (lat > cPI / 2) {
     lat = cPI - lat;
@@ -95,8 +97,6 @@ bfield_info_type get_bfield(precision_t lon,
     lon = lon + cTWOPI;
 
   bfield_info_type bfield_info;
-  if(alt < 100*1000)
-    std::cout << "after: " << lon << ", " << lat << ", " << alt << endl;
 
   if (input.get_bfield_type() == "none") {
     bfield_info.b[0] = 0.0;
