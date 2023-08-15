@@ -16,20 +16,25 @@
 // -----------------------------------------------------------------------------
 // Calculate an altitude adjusted corrected geomagnetic coordinate given the planetary
 // characteristics
+//
+// Variables:
+//  - longitude in radians
+//  - latitude in radians
+//  - altitude in meters
 // -----------------------------------------------------------------------------
-
 bfield_info_type get_aacgm(precision_t lon,
                            precision_t lat,
                            precision_t alt,
                            bool DoDebug,
                            Planets planet) {
-                            
+                  
     std::string function = "aacgm";
     static int iFunction = -1;
 
     if (DoDebug)
         report.enter(function, iFunction);
 
+    precision_t alt_km = alt / 1000.0;
     bfield_info_type bfield_info;
 
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
@@ -38,7 +43,9 @@ bfield_info_type get_aacgm(precision_t lon,
     double brtp[3]; // x, y, z essentially (br, btheta, bphi)
 
     //convert from geodetic (lat, lon, alt) to geocentric
-    plh2xyz(lat, lon, alt, geocentric);
+    double deg_lat = (lat / cTWOPI) * 360.0; //convert to degrees
+    double deg_lon = (lon / cTWOPI) * 360.0; //convert to degrees
+    geod2geoc(deg_lat, deg_lon, alt_km, geocentric);
 
     //set IGRF input variables: r (geocentric distance, km), theta (co-lat, rad), phi (lon, rad)
     rtp[0] = geocentric[0]; //taking in radial distance from center of Earth
@@ -55,10 +62,8 @@ bfield_info_type get_aacgm(precision_t lon,
     //AACGM conversion
     double aacgm_lat;
     double aacgm_lon;
-    AACGM_v2_SetNow();
-    double deg_lat = (lat / cTWOPI) * 360.0; //convert to degrees
-    double deg_lon = (lon / cTWOPI) * 360.0; //convert to degrees
-    AACGM_v2_Convert(deg_lat, deg_lon, alt, &aacgm_lat, &aacgm_lon, &geocentric[0], ALLOWTRACE);
+    AACGM_v2_Convert(deg_lat, deg_lon, alt_km, &aacgm_lat, &aacgm_lon, &geocentric[0], ALLOWTRACE);
+    std::cout << deg_lat << ", " << aacgm_lat << ", " << (aacgm_lat / 360.0) * cTWOPI << endl;
     bfield_info.lon = (aacgm_lon / 360.0) * cTWOPI; //convert back to radians
     bfield_info.lat = (aacgm_lat / 360.0) * cTWOPI; //convert back to radians
     
