@@ -13,6 +13,7 @@ from netCDF4 import Dataset
 import os
 import datetime as dt
 from pylab import cm
+import math
 
 # ----------------------------------------------------------------------
 #
@@ -191,19 +192,25 @@ if __name__ == '__main__':
     
         fig = plt.figure(figsize = (10,8))
         ax = fig.add_axes([0.075, 0.1, 0.95, 0.8])
+        
+        print(valueData[var][:, 1:-1, 1:-1, iAlt])
+        print (valueData[var]['col' == 'nan'])
 
-        mini = np.min(valueData[var][:, 1:-1, 1:-1, iAlt])
-        maxi = np.max(np.abs(valueData[var][:, 1:-1, 1:-1, iAlt]))
+        mini = np.nanmin(valueData[var][:, 1:-1, 1:-1, iAlt])
+        maxi = np.nanmax(valueData[var][:, 1:-1, 1:-1, iAlt])
+        #maxi = np.max(np.abs(i for i in valueData[var][:, 1:-1, 1:-1, iAlt] if not math.isnan(i)))
+        print(maxi)
         if (mini < 0):
             cmap = cm.bwr
             mini = -maxi
         else:
             cmap = cm.plasma
 
+        print(mini)
         for iBlock in range(nBlocks):
-            lon2d = lonData['lon'][iBlock, :,:, iAlt]
-            lat2d = latData['lat'][iBlock, :, :, iAlt]
-            v2d = valueData[var][iBlock, :, :, iAlt]
+            lon2d = lonData['lon'][iBlock, 1:-1, 1:-1, iAlt]
+            lat2d = latData['lat'][iBlock, 1:-1, 1:-1, iAlt]
+            v2d = valueData[var][iBlock, 1:-1, 1:-1, iAlt]
             cax = ax.pcolormesh(lon2d, lat2d, v2d, \
                                 vmin = mini, vmax = maxi, cmap = cmap)
             

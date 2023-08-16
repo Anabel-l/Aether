@@ -34,39 +34,48 @@ bfield_info_type get_aacgm(precision_t lon,
     if (DoDebug)
         report.enter(function, iFunction);
 
-    precision_t alt_km = alt / 1000.0;
     bfield_info_type bfield_info;
-
     double rtp[3]; //r (km), theta (co-latitude in radians), phi (longitude in radians)
-    double geocentric[3]; // radial distance from center of Earth [RE], angle from north pole [radians],
+    double r; // radial distance from center of Earth [RE], angle from north pole [radians],
 ;                         // azimuthal angle [radians]
-    double brtp[3]; // x, y, z essentially (br, btheta, bphi)
+    double brtp[3]; // (br, btheta, bphi)
+    double bxyz[3]; // translated to xyz
+    precision_t b_env[3]; //final: east, north, vertical
 
-    //convert from geodetic (lat, lon, alt) to geocentric
-    double deg_lat = (lat / cTWOPI) * 360.0; //convert to degrees
-    double deg_lon = (lon / cTWOPI) * 360.0; //convert to degrees
-    geod2geoc(deg_lat, deg_lon, alt_km, geocentric);
-
-    //set IGRF input variables: r (geocentric distance, km), theta (co-lat, rad), phi (lon, rad)
-    rtp[0] = geocentric[0]; //taking in radial distance from center of Earth
-    rtp[1] = (cPI / 2.0) - lat; //co-latitude, given latitude
-    rtp[2] = lon;
+    // transform llr to spherical coordinates
+    precision_t llr[3];
+    precision_t xyz_precise[3];
+    llr[0] = lon;
+    llr[1] = lat;
+    llr[2] = alt + planet.get_radius(lat);
+    transform_llr_to_xyz(llr, xyz_precise);
+    double xyz[3];
+    for(int i = 0; i < 3; ++i)
+      xyz[i] = xyz_precise[i];
+    car2sph(xyz, rtp); //set IGRF input variables: r (geocentric distance, km), theta (co-lat, rad), phi (lon, rad)
 
     //IGRF conversion
     IGRF_compute(rtp, brtp);
+    bspcar(rtp[1], rtp[2], brtp, bxyz);
+    precision_t bxyz_precise[3];
+    for(int i = 0; i < 3; ++i)
+      bxyz_precise[i] = bxyz[i];
+    transform_vector_xyz_to_env(bxyz_precise, lon, lat, b_env);
 
-    bfield_info.b[0] = brtp[0];
-    bfield_info.b[1] = brtp[1];
-    bfield_info.b[2] = brtp[2];
+    bfield_info.b[0] = b_env[0];
+    bfield_info.b[1] = b_env[1];
+    bfield_info.b[2] = b_env[2];
 
     //AACGM conversion
     double aacgm_lat;
     double aacgm_lon;
-    AACGM_v2_Convert(deg_lat, deg_lon, alt_km, &aacgm_lat, &aacgm_lon, &geocentric[0], ALLOWTRACE);
-    std::cout << deg_lat << ", " << aacgm_lat << ", " << (aacgm_lat / 360.0) * cTWOPI << endl;
-    bfield_info.lon = (aacgm_lon / 360.0) * cTWOPI; //convert back to radians
-    bfield_info.lat = (aacgm_lat / 360.0) * cTWOPI; //convert back to radians
-    
+    AACGM_v2_Convert(lat * 180. / cPI, lon * 180. / cPI, alt, &aacgm_lat, &aacgm_lon, &r, ALLOWTRACE);
+    double geodetic[3];
+    bfield_info.lon = aacgm_lon * cPI / 180.; 
+    bfield_info.lat = aacgm_lat * cPI / 180.; 
+
+    std::cout << "East: " << bfield_info.b[0] << " North: " << bfield_info.b[1] << " Vertical: " << bfield_info.b[2] << " Mlat: " << bfield_info.lat << " Mlon: " << bfield_info.lon << endl;
+
     if (DoDebug)
         report.exit(function);
 
