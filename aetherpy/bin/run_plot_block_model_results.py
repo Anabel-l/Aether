@@ -239,10 +239,7 @@ def plot_block_data(data, block_index, var_to_plot, alt_to_plot, fig, ax_list,
 
     # Plot data on each Axes instance in axList
     for ax in ax_list:
-        print('here 1')
         plot_on_ax(ax, lons, lats, v, split_block, use_centers, **plot_kwargs)
-        print('here done')
-
 
     # Step by step debug file generation
     if debug_filename:
@@ -254,9 +251,7 @@ def plot_block_data(data, block_index, var_to_plot, alt_to_plot, fig, ax_list,
 def plot_on_ax(ax, lons, lats, v, split_block, use_centers, **kwargs):
     # Block doesn't cover pole
     if not split_block:
-        print('running this!')
         ax.pcolor(lons, lats, v, **kwargs)
-        print('done!')
         return
     # Block does cover pole -- slice
     x_mid = int(lons.shape[0] / 2)
@@ -392,7 +387,6 @@ def plot_all_blocks(data, var_to_plot, alt_to_plot, plot_filename,
     for i in range(data['nblocks']):
         print(f"    Computing block {i}")
         split_block = data['nblocks'] == 6 and i in [4, 5]
-        print(var_to_plot, alt_to_plot, mini, maxi)
         plot_block_data(data, i, var_to_plot, alt_to_plot, fig,
                         ax_list, mini, maxi, split_block)
 

@@ -48,7 +48,11 @@ bfield_info_type get_aacgm(precision_t lon,
     if(lon < -cPI)
       lon = lon - cPI; 
 
-    geod2geoc(lat * 180. / cPI, lon * 180. / cPI, alt / 1000., rtp);
+    //convert to degrees
+    double deg_lat = lat * 180. / cPI;
+    double deg_lon = lon * 180. / cPI;
+
+    geod2geoc(deg_lat, deg_lon, alt / 1000., rtp);
     IGRF_compute(rtp, brtp);
     bspcar(rtp[1],rtp[2], brtp, bxyz); 
     for(int i = 0; i < 3; ++i)
@@ -63,21 +67,25 @@ bfield_info_type get_aacgm(precision_t lon,
     double aacgm_lon;
     double r;
 
-    double deg_lat = (lat * 180. / cPI);
-    double deg_lon = (lon * 180. / cPI);
-    std::cout << "Lat: " << deg_lat << " Lon: " << deg_lon << " alt: " << alt / 1000.0 << endl;
-    AACGM_v2_Convert(deg_lat, deg_lon, alt / 1000.0, &aacgm_lat, &aacgm_lon, &r, G2A|TRACE);
+    //std::cout << "Lat: " << deg_lat << " Lon: " << deg_lon << " alt: " << alt / 1000.0 << endl;
+    int err = AACGM_v2_Convert(deg_lat, deg_lon, alt / 1000.0, &aacgm_lat, &aacgm_lon, &r, G2A|TRACE);
+    if(err != 0){
+      report.error("AACGM calculation error, most likely near the equator");
+      return bfield_info;
+    }
     int time[7];
-    int err = AACGM_v2_GetDateTime(&time[0], &time[1], &time[2], &time[3], &time[4], &time[5], &time[6]);
-    if(aacgm_lat != aacgm_lat || aacgm_lon != aacgm_lon)
+    err = AACGM_v2_GetDateTime(&time[0], &time[1], &time[2], &time[3], &time[4], &time[5], &time[6]);
+    if(aacgm_lat != aacgm_lat || aacgm_lon != aacgm_lon || err != 0){
       report.error(("NaN in aacgm calculations."));
-    else
+      return bfield_info;
+    } else {
       aacgm_lon = inv_MLTConvert_v2(time[0], time[1], time[2], time[3], time[4], time[5], aacgm_lon);
+    }
 
     bfield_info.lat = (aacgm_lat * cPI / 180.);
     bfield_info.lon = (aacgm_lon * cPI / 180.);
 
-    std::cout << "East: " << bfield_info.b[0] << " North: " << bfield_info.b[1] << " Vertical: " << bfield_info.b[2] << " Mlat: " << bfield_info.lat << " Mlon: " << bfield_info.lon << endl;
+    //std::cout << "East: " << bfield_info.b[0] << " North: " << bfield_info.b[1] << " Vertical: " << bfield_info.b[2] << " Mlat: " << bfield_info.lat << " Mlon: " << bfield_info.lon << endl;
 
     if (DoDebug)
         report.exit(function);
