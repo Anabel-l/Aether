@@ -48,13 +48,17 @@ bfield_info_type get_aacgm(precision_t lon,
     if(lon < -cPI)
       lon = lon - cPI; 
 
-    //convert to degrees
+    //convert to used units: degrees for lat/lon, km for altitude
     double deg_lat = lat * 180. / cPI;
     double deg_lon = lon * 180. / cPI;
+    double alt_km = alt / 1000.;
 
-    geod2geoc(deg_lat, deg_lon, alt / 1000., rtp);
+    //convert the geodetic lat & longitude into a geocentric form so that IGRF has
+    //the right inputs, then convert to cartesian (xyz) so that we can use the same
+    //east, north, vertical vector transformation as the dipole option
+    geod2geoc(deg_lat, deg_lon, alt_km, rtp);
     IGRF_compute(rtp, brtp);
-    bspcar(rtp[1],rtp[2], brtp, bxyz); 
+    bspcar(rtp[1],rtp[2], brtp, bxyz);
     for(int i = 0; i < 3; ++i)
       bxyz_precise[i] = bxyz[i];
     transform_vector_xyz_to_env(bxyz_precise, lat, lon, b_env);
@@ -68,7 +72,7 @@ bfield_info_type get_aacgm(precision_t lon,
     double r;
 
     //std::cout << "Lat: " << deg_lat << " Lon: " << deg_lon << " alt: " << alt / 1000.0 << endl;
-    int err = AACGM_v2_Convert(deg_lat, deg_lon, alt / 1000.0, &aacgm_lat, &aacgm_lon, &r, G2A|TRACE);
+    int err = AACGM_v2_Convert(deg_lat, deg_lon, alt_km, &aacgm_lat, &aacgm_lon, &r, G2A|TRACE);
     if(err != 0){
       report.error("AACGM calculation error, most likely near the equator");
       return bfield_info;

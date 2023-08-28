@@ -23,7 +23,7 @@
 	"dAlt"   : 0.25,
 	"IsUniformAlt" : false},  
 
-    "BField" : "aacgm",
+    "BField" : "dipole",
 
     "OmniwebFiles" : ["UA/inputs/omni_20110319.txt"],
 

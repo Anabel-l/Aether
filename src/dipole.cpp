@@ -110,7 +110,6 @@ bfield_info_type get_dipole(precision_t lon,
 
   //std::cout << "East: " << bfield_info.b[0] << " North: " << bfield_info.b[1] << " Vertical: " << bfield_info.b[2] << " Mlat: " << bfield_info.lat << " Mlon: " << bfield_info.lon << endl;
 
-
   if (DoDebug)
     report.exit(function);
 
