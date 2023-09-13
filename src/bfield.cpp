@@ -58,14 +58,12 @@ bfield_info_type get_aacgm(precision_t lon,
     //east, north, vertical vector transformation as the dipole option
     geod2geoc(deg_lat, deg_lon, alt_km, rtp);
     IGRF_compute(rtp, brtp);
-    bspcar(rtp[1],rtp[2], brtp, bxyz);
-    for(int i = 0; i < 3; ++i)
-      bxyz_precise[i] = bxyz[i];
-    transform_vector_xyz_to_env(bxyz_precise, lat, lon, b_env);
-
-    bfield_info.b[0] = b_env[0];
-    bfield_info.b[1] = b_env[1];
-    bfield_info.b[2] = b_env[2];
+    // phi = longitude
+    bfield_info.b[0] = brtp[2];
+    // theta = -latitude
+    bfield_info.b[1] = -brtp[1];
+    // r = r
+    bfield_info.b[2] = brtp[0];
 
     double aacgm_lat;
     double aacgm_lon;
