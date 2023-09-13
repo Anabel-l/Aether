@@ -107,8 +107,7 @@ int IGRF_loadcoeffs(void)
   #endif
 
   /* file containing the IGRF coefficients */
-  strcpy(filename, get_current_dir_name());
-  strcat(filename, "/../ext/AACGM/coeffs/magmodel_1590-2020.txt");
+  strcpy(filename, "./UA/inputs/ext/aacgm/magmodel_1590-2020.txt");
   if (filename == NULL) {
     printf("\n");
     printf("***************************************************************\n");

@@ -879,8 +879,8 @@ int AACGM_v2_LoadCoefs(int year)
   printf("AACGM_v2_LoadCoefs\n");
   #endif
   /* default location of coefficient files */
-  strcpy(root, get_current_dir_name());
-  strcat(root, "/coeffs/magmodel_1590-2020.txt");
+  strcpy(root, "UA/inputs/ext/aacgm/");
+  strcat(root, "aacgm_coeffs-13-");
   if (strlen(root)==0) {
     AACGM_v2_errmsg(2);
     return -1;
