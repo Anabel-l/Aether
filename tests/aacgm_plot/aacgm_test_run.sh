@@ -1,11 +1,13 @@
-#! /usr/bin/bash
+#!/bin/sh
 #run aacgm version
-cp -R ../../share/run ../../run.test
-cd ../../run.test/UA/inputs
-cp -f ../../../tests/aacgm_plot/aether.json.aacgm ./aether.json
-cd ../../
+rm -rf run.test
+cp -R ../../share/run ./run.test
+cd run.test
+cp -f ../aether.json.aacgm ./aether.json
 ./aether
 cd UA/output
-../../../srcPython/postAether.py -rm
-~/Aether-test/Aether/aetherpy/aether_plot_simple.py 3DBFI_*.nc -var="Beast" -alt=200
-~/Aether-test/Aether/aetherpy/aether_plot_simple.py 3DBFI_*.nc -var="mlat" -alt=200
+~/bin/postAether.py -rm
+~/bin/aether_plot_simple.py 3DBFI_*.nc -var="Beast" -alt=120
+~/bin/aether_plot_simple.py 3DBFI_*.nc -var="Bnorth" -alt=120
+~/bin/aether_plot_simple.py 3DBFI_*.nc -var="Bvertical" -alt=120
+~/bin/aether_plot_simple.py 3DBFI_*.nc -var="mlat" -alt=120
