@@ -11,13 +11,12 @@
 	"check_for_nans" : false
     },
 
-    "EndTime" : [2011, 3, 20, 0, 10, 0],
+    "EndTime" : [2011, 3, 20, 0, 1, 0],
 
     "GeoBlockSize" : {
 	"nLons" : 18,
 	"nLats" : 18,
 	"nAlts" : 50},
-
 
     "GeoGrid" : {
 	"dAlt"   : 0.25,
